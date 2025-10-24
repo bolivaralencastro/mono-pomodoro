@@ -12,12 +12,19 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": {
-              "base": "./dist",
-              "browser": "."
-            },
+            "outputPath": "dist",
+            "index": "index.html",
             "browser": "index.tsx",
-            "tsConfig": "tsconfig.json"
+            "polyfills": [],
+            "tsConfig": "tsconfig.json",
+            "baseHref": "./",
+            "deployUrl": "./",
+            "allowedCommonJsDependencies": [
+              "rxjs",
+              "@angular/core",
+              "@angular/compiler",
+              "@angular/platform-browser"
+            ]
           },
           "configurations": {
             "production": {
@@ -48,5 +55,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "3d9683fb-fc46-4830-88ed-b078bbc084c3"
   }
 }

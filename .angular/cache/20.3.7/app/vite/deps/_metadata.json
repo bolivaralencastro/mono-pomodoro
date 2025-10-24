@@ -1,0 +1,34 @@
+{
+  "hash": "fb48afe5",
+  "configHash": "f766e151",
+  "lockfileHash": "a0b468f2",
+  "browserHash": "b3220c0d",
+  "optimized": {
+    "@angular/compiler": {
+      "src": "../../../../../../node_modules/@angular/compiler/fesm2022/compiler.mjs",
+      "file": "@angular_compiler.js",
+      "fileHash": "a225ea9a",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "763aea36",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "b73b32dd",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-ATAKJ3GP": {
+      "file": "chunk-ATAKJ3GP.js"
+    },
+    "chunk-GOMI4DH3": {
+      "file": "chunk-GOMI4DH3.js"
+    }
+  }
+}

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "ng serve",
     "build": "ng build",
+    "build:github": "ng build --base-href=./ --deploy-url=./",
     "preview": "ng serve --configuration=production"
   },
   "dependencies": {
