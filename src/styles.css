@@ -14,7 +14,8 @@
   left: 0;
   right: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 1rem;
   align-items: center;
   padding: 0 calc(15px + var(--safe-area-left)) 0 calc(15px + var(--safe-area-right));
   transform: translateY(-50%);
