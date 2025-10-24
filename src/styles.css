@@ -1,0 +1,39 @@
+/* Estilos globais */
+:root {
+  /* Define as áreas seguras para dispositivos com notch */
+  --safe-area-top: env(safe-area-inset-top, 20px);
+  --safe-area-right: env(safe-area-inset-right, 20px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+  --safe-area-left: env(safe-area-inset-left, 20px);
+}
+
+/* Ajustar botões e indicadores de tempo para respeitar áreas seguras */
+.app-root button[title="Resetar (R)"] {
+  position: absolute;
+  top: calc(10px + var(--safe-area-top));
+  right: calc(10px + var(--safe-area-right));
+}
+
+.app-root div[aria-hidden="true"] {
+  position: absolute;
+  top: calc(10px + var(--safe-area-top));
+  left: calc(10px + var(--safe-area-left));
+}
+
+/* Ajuste para centralizar conteúdo em telas com notch */
+.app-root .p-safe {
+  padding-top: calc(40px + var(--safe-area-top));
+  padding-right: var(--safe-area-right);
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+}
+
+/* Ajuste para telas menores */
+@media screen and (max-width: 768px) {
+  .app-root .p-safe {
+    padding-top: calc(40px + var(--safe-area-top));
+    padding-right: var(--safe-area-right);
+    padding-bottom: var(--safe-area-bottom);
+    padding-left: var(--safe-area-left);
+  }
+}

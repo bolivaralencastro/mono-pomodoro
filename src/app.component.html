@@ -1,11 +1,11 @@
 <div 
-  class="fixed inset-0 touch-manipulation select-none bg-white text-black"
+  class="app-root fixed inset-0 touch-manipulation select-none bg-white text-black"
   aria-label="Temporizador Pomodoro minimalista"
   (pointerdown)="onPointerDown($event)"
   (pointermove)="onPointerMove($event)"
   (pointerup)="onPointerUp($event)"
   (pointerleave)="onPointerUp($event)"
-  (wheel)="onWheel($event)"
+  (wheel)="$event.preventDefault(); onWheel($event)"
 >
   @if (!isBreathing() && !(isPaused() && wasBreathing())) {
     <!-- Linhas de divisão de tempo -->
@@ -29,51 +29,53 @@
   }
 
   <!-- HUD (Heads-Up Display) com informações -->
-  <div class="absolute inset-0 grid place-items-center pointer-events-none" aria-live="polite" aria-atomic="true">
-    @if (isSetting()) {
-      <div class="text-[clamp(20px,8vw,64px)] tracking-wider" role="status">
-        {{ minutes() }} min
-      </div>
-      <div class="absolute bottom-5 w-full text-center text-xs opacity-60">
-        arraste ↑↓ ou role para definir • toque para iniciar
-      </div>
-    }
-
-    @if (isCountdown()) {
-      <div class="text-[clamp(32px,18vw,160px)]">
-        {{ countdownValue() }}
-      </div>
-       <div class="absolute bottom-5 w-full text-center text-xs opacity-60">
-        preparando...
-      </div>
-    }
-
-    @if (isPaused()) {
-      <div 
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[clamp(16px,5vw,32px)] tracking-widest"
-        [class.text-white]="wasBreathing()"
-        [class.text-black]="!wasBreathing()"
-      >
-        PAUSADO
-      </div>
-    }
-
-    @if (isBreathing() || (isPaused() && wasBreathing())) {
-      <div 
-        class="w-1/2 aspect-square bg-black rounded-full"
-        [style.transform]="'scale(' + breathingScale() + ')'"
-      ></div>
-      @if (isBreathing()) {
-        <div class="absolute bottom-5 w-full text-center text-xs opacity-60">
-          Respire
+  <div class="absolute inset-0 flex items-center justify-center pointer-events-none p-safe" aria-live="polite" aria-atomic="true">
+    <div class="flex flex-col items-center justify-center">
+      @if (isSetting()) {
+        <div class="text-[clamp(20px,8vw,64px)] tracking-wider" role="status">
+          {{ minutes() }} min
+        </div>
+        <div class="mt-4 w-full text-center text-xs opacity-60 max-w-xs">
+          arraste ↑↓ ou role para definir • toque para iniciar
         </div>
       }
-    }
+
+      @if (isCountdown()) {
+        <div class="text-[clamp(32px,18vw,160px)]">
+          {{ countdownValue() }}
+        </div>
+        <div class="mt-4 w-full text-center text-xs opacity-60">
+          preparando...
+        </div>
+      }
+
+      @if (isPaused()) {
+        <div 
+          class="text-[clamp(16px,5vw,32px)] tracking-widest"
+          [class.text-white]="wasBreathing()"
+          [class.text-black]="!wasBreathing()"
+        >
+          PAUSADO
+        </div>
+      }
+
+      @if (isBreathing() || (isPaused() && wasBreathing())) {
+        <div 
+          class="w-1/2 aspect-square bg-black rounded-full"
+          [style.transform]="'scale(' + breathingScale() + ')'"
+        ></div>
+        @if (isBreathing()) {
+          <div class="mt-4 w-full text-center text-xs opacity-60">
+            Respire
+          </div>
+        }
+      }
+    </div>
   </div>
 
   <!-- Nova tela de Conclusão -->
   @if (isFinished()) {
-    <div class="absolute inset-0 flex flex-col items-center justify-center text-white z-10 p-4 text-center">
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-white z-10 p-safe text-center">
       <h2 class="text-4xl font-bold mb-8">Concluído!</h2>
       
       <div class="flex flex-col items-center gap-y-4 w-full max-w-xs">
@@ -116,7 +118,7 @@
     </div>
   }
 
-  <!-- Botão de Reset -->
+  <!-- Botão de Reset - Agora em posição segura -->
   @if (!isSetting() && !isFinished()) {
     <button 
       [class]="buttonClasses()"
