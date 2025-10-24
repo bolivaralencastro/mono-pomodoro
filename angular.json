@@ -24,6 +24,12 @@
               "@angular/core",
               "@angular/compiler",
               "@angular/platform-browser"
+            ],
+            "assets": [
+              "index.html",
+              "manifest.web.json",
+              "sw.js",
+              "clean-pomodoro.webp"
             ]
           },
           "configurations": {

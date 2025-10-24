@@ -7,20 +7,18 @@
   --safe-area-left: env(safe-area-inset-left, 20px);
 }
 
-/* Botão de Reset centralizado e respeitando áreas seguras */
-.app-root .center-button {
+/* Container centralizado para os elementos principais */
+.app-root .center-container {
   position: absolute;
   top: calc(50% + var(--safe-area-top) / 2);
-  right: calc(10px + var(--safe-area-right));
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 calc(15px + var(--safe-area-left)) 0 calc(15px + var(--safe-area-right));
   transform: translateY(-50%);
-}
-
-/* Indicador de tempo centralizado e respeitando áreas seguras */
-.app-root .center-time-display {
-  position: absolute;
-  top: calc(50% + var(--safe-area-top) / 2);
-  left: calc(10px + var(--safe-area-left));
-  transform: translateY(-50%);
+  z-index: 10;
 }
 
 /* Ajuste para centralizar conteúdo em telas com notch */
@@ -41,8 +39,8 @@
   }
   
   /* Ajustes para dispositivos móveis */
-  .app-root .center-button,
-  .app-root .center-time-display {
+  .app-root .center-container {
     top: calc(50% + var(--safe-area-top) / 2);
+    padding: 0 calc(15px + var(--safe-area-left)) 0 calc(15px + var(--safe-area-right));
   }
 }

@@ -118,26 +118,29 @@
     </div>
   }
 
-  <!-- Botão de Reset - Centralizado -->
+  <!-- Botão de Reset e Indicador de Tempo - Ambos centralizados -->
   @if (!isSetting() && !isFinished()) {
-    <button 
-      [class]="buttonClasses() + ' center-button'"
-      title="Resetar (R)" 
-      aria-label="Resetar"
-      (click)="resetAll()"
-      (pointerdown)="$event.stopPropagation()"
-    >
-      ⟲
-    </button>
-  }
-
-  <!-- Indicador de tempo centralizado -->
-  @if (isTimerActive() && !isFinished()) {
-    <div 
-      [class]="timeDisplayClasses() + ' center-time-display'"
-      aria-hidden="true"
-    >
-      {{ timeDisplay() }}
+    <div class="center-container">
+      <!-- Indicador de tempo -->
+      @if (isTimerActive() && !isFinished()) {
+        <div 
+          [class]="timeDisplayClasses()"
+          aria-hidden="true"
+        >
+          {{ timeDisplay() }}
+        </div>
+      }
+      
+      <!-- Botão de Reset -->
+      <button 
+        [class]="buttonClasses()"
+        title="Resetar (R)" 
+        aria-label="Resetar"
+        (click)="resetAll()"
+        (pointerdown)="$event.stopPropagation()"
+      >
+        ⟲
+      </button>
     </div>
   }
 </div>
