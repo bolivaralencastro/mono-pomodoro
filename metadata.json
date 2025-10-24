@@ -1,0 +1,5 @@
+{
+  "name": "Mono Pomodoro",
+  "description": "Um temporizador Pomodoro minimalista e focado, construído com Angular. Arraste para definir o tempo, toque para iniciar e mantenha o foco. O fundo se preenche visualmente para marcar o progresso.",
+  "requestFramePermissions": []
+}

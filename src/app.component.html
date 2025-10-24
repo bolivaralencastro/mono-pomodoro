@@ -1,0 +1,141 @@
+<div 
+  class="fixed inset-0 touch-manipulation select-none bg-white text-black"
+  aria-label="Temporizador Pomodoro minimalista"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointerleave)="onPointerUp($event)"
+  (wheel)="onWheel($event)"
+>
+  @if (!isBreathing() && !(isPaused() && wasBreathing())) {
+    <!-- Linhas de divisão de tempo -->
+    @if (isSetting() || isRunningOrPaused()) {
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        @for (line of divisionLines(); track line.bottom) {
+          <div 
+            class="absolute left-0 right-0 h-px bg-transparent border-t border-dashed border-gray-200"
+            [style.bottom.%]="line.bottom"
+          ></div>
+        }
+      </div>
+    }
+
+    <!-- Fundo de preenchimento que indica o progresso -->
+    <div 
+      class="absolute left-0 right-0 bottom-0 bg-black transition-all duration-150 ease-linear pointer-events-none"
+      [style.height.%]="fillHeight()"
+      aria-hidden="true"
+    ></div>
+  }
+
+  <!-- HUD (Heads-Up Display) com informações -->
+  <div class="absolute inset-0 grid place-items-center pointer-events-none" aria-live="polite" aria-atomic="true">
+    @if (isSetting()) {
+      <div class="text-[clamp(20px,8vw,64px)] tracking-wider" role="status">
+        {{ minutes() }} min
+      </div>
+      <div class="absolute bottom-5 w-full text-center text-xs opacity-60">
+        arraste ↑↓ ou role para definir • toque para iniciar
+      </div>
+    }
+
+    @if (isCountdown()) {
+      <div class="text-[clamp(32px,18vw,160px)]">
+        {{ countdownValue() }}
+      </div>
+       <div class="absolute bottom-5 w-full text-center text-xs opacity-60">
+        preparando...
+      </div>
+    }
+
+    @if (isPaused()) {
+      <div 
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[clamp(16px,5vw,32px)] tracking-widest"
+        [class.text-white]="wasBreathing()"
+        [class.text-black]="!wasBreathing()"
+      >
+        PAUSADO
+      </div>
+    }
+
+    @if (isBreathing() || (isPaused() && wasBreathing())) {
+      <div 
+        class="w-1/2 aspect-square bg-black rounded-full"
+        [style.transform]="'scale(' + breathingScale() + ')'"
+      ></div>
+      @if (isBreathing()) {
+        <div class="absolute bottom-5 w-full text-center text-xs opacity-60">
+          Respire
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Nova tela de Conclusão -->
+  @if (isFinished()) {
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-white z-10 p-4 text-center">
+      <h2 class="text-4xl font-bold mb-8">Concluído!</h2>
+      
+      <div class="flex flex-col items-center gap-y-4 w-full max-w-xs">
+        <!-- Ação: Respiração -->
+        <button 
+          class="w-full flex items-center justify-center gap-x-2 border border-white rounded-full px-6 py-3 text-white hover:bg-white hover:text-black transition-colors focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-white"
+          title="Iniciar exercício de respiração (5 min)"
+          aria-label="Iniciar exercício de respiração de 5 minutos"
+          (click)="startBreathing()"
+          (pointerdown)="$event.stopPropagation()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+          </svg>
+          <span class="text-sm">Iniciar Respiração</span>
+        </button>
+
+        <!-- Ação: Reiniciar Pomodoro -->
+        <button
+          class="w-full flex items-center justify-center gap-x-2 border border-white rounded-full px-6 py-3 text-white hover:bg-white hover:text-black transition-colors focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-white"
+          title="Reiniciar o timer com a mesma duração"
+          aria-label="Reiniciar o timer com a mesma duração"
+          (click)="restartPomodoro()"
+          (pointerdown)="$event.stopPropagation()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8.1 8.1 0 0 0 4.5 9.5M4 5v5h5"/></svg>
+          <span class="text-sm">Reiniciar Pomodoro</span>
+        </button>
+
+        <!-- Ação: Finalizar -->
+        <button
+          class="w-full flex items-center justify-center gap-x-2 border border-white rounded-full px-6 py-3 text-white hover:bg-white hover:text-black transition-colors focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-white"
+          title="Finalizar e voltar ao início (R)"
+          aria-label="Finalizar e voltar para a tela inicial"
+          (click)="resetAll()"
+          (pointerdown)="$event.stopPropagation()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="text-sm">Finalizar</span>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Botão de Reset -->
+  @if (!isSetting() && !isFinished()) {
+    <button 
+      [class]="buttonClasses()"
+      title="Resetar (R)" 
+      aria-label="Resetar"
+      (click)="resetAll()"
+      (pointerdown)="$event.stopPropagation()"
+    >
+      ⟲
+    </button>
+  }
+
+  <!-- Indicador de tempo no topo -->
+  @if (isTimerActive() && !isFinished()) {
+    <div 
+      [class]="timeDisplayClasses()"
+      aria-hidden="true"
+    >
+      {{ timeDisplay() }}
+    </div>
+  }
+</div>
