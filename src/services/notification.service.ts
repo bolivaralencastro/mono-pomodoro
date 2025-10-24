@@ -4,30 +4,53 @@ import { Injectable } from '@angular/core';
 export class NotificationService {
   private audioContext: AudioContext | null = null;
   private alarmInterval: any = null;
+  private audioEnabled: boolean = false;
 
   /**
    * Initializes the AudioContext if it doesn't exist.
    * This is done lazily to comply with browser autoplay policies.
+   * On iOS, we need user interaction to enable audio.
    */
   private createAudioContext(): void {
     if (this.audioContext) return;
     try {
-      this.audioContext = new window.AudioContext();
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     } catch (e) {
-      // Silently fail if AudioContext is not supported.
       console.error('Web Audio API is not supported in this browser.');
     }
+  }
+
+  /**
+   * Enables audio on user interaction (required for iOS Safari).
+   */
+  enableAudio(): void {
+    if (this.audioEnabled) return;
+    
+    this.createAudioContext();
+    if (this.audioContext && this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
+    this.audioEnabled = true;
   }
 
   /**
    * Plays the alarm sound sequence once.
    */
   private playSoundSequence(): void {
-    if (!this.audioContext) {
-      return;
+    // On iOS, we need to ensure audio is enabled first
+    if (!this.audioEnabled && this.audioContext && this.audioContext.state === 'suspended') {
+      return; // Wait for user interaction to enable audio
     }
 
+    this.createAudioContext();
+    if (!this.audioContext) return;
+
     try {
+      // Resume context if suspended (common after user interaction on iOS)
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume();
+      }
+
       const now = this.audioContext.currentTime;
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
@@ -54,7 +77,7 @@ export class NotificationService {
    * Starts playing the alarm sound intermittently.
    */
   playAlarm(): void {
-    this.createAudioContext();
+    this.enableAudio(); // Ensure audio is enabled before playing alarm
     this.stopAlarm(); // Garante que não haja múltiplos alarmes tocando.
 
     this.playSoundSequence(); // Toca imediatamente na primeira vez.
@@ -67,8 +90,15 @@ export class NotificationService {
    * Plays a short, subtle "tick" sound.
    */
   playTickSound(): void {
+    this.enableAudio(); // Ensure audio is enabled
+    
     this.createAudioContext();
     if (!this.audioContext) return;
+
+    // Resume context if suspended (common after user interaction on iOS)
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
 
     try {
       const now = this.audioContext.currentTime;

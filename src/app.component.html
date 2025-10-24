@@ -118,10 +118,10 @@
     </div>
   }
 
-  <!-- Botão de Reset - Agora em posição segura -->
+  <!-- Botão de Reset - Centralizado -->
   @if (!isSetting() && !isFinished()) {
     <button 
-      [class]="buttonClasses()"
+      [class]="buttonClasses() + ' center-button'"
       title="Resetar (R)" 
       aria-label="Resetar"
       (click)="resetAll()"
@@ -131,10 +131,10 @@
     </button>
   }
 
-  <!-- Indicador de tempo no topo -->
+  <!-- Indicador de tempo centralizado -->
   @if (isTimerActive() && !isFinished()) {
     <div 
-      [class]="timeDisplayClasses()"
+      [class]="timeDisplayClasses() + ' center-time-display'"
       aria-hidden="true"
     >
       {{ timeDisplay() }}

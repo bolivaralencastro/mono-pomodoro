@@ -116,6 +116,9 @@ export class AppComponent {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
+    // Enable audio on user interaction (required for iOS Safari)
+    this.notificationService.enableAudio();
+    
     if (event.key.toLowerCase() === 'r') {
       this.resetAll();
       return;
@@ -144,6 +147,9 @@ export class AppComponent {
 
   onPointerDown(event: PointerEvent): void {
     event.preventDefault();
+    // Enable audio on user interaction (required for iOS Safari)
+    this.notificationService.enableAudio();
+    
     switch (this.state()) {
       case PomodoroState.SETTING:
         this.isDragging.set(true);
@@ -187,16 +193,19 @@ export class AppComponent {
   }
 
   startBreathing(): void {
+    this.notificationService.enableAudio(); // Enable audio on user interaction
     this.notificationService.stopAlarm();
     this.timerService.startBreathingSession();
   }
 
   restartPomodoro(): void {
+    this.notificationService.enableAudio(); // Enable audio on user interaction
     this.notificationService.stopAlarm();
     this.timerService.restart();
   }
 
   resetAll(): void {
+    this.notificationService.enableAudio(); // Enable audio on user interaction
     this.notificationService.stopAlarm();
     this.fullscreenService.exitFullscreen();
     this.timerService.reset(25);
